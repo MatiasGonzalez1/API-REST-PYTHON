@@ -15,7 +15,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-#definicion de clase
+#Creacion de tabla Categoria
 class Categoria(db.Model):
   cat_id = db.Column(db.Integer,primary_key=True)
   cat_nom = db.Column(db.String(100))
@@ -29,6 +29,24 @@ class Categoria(db.Model):
 #comando de creacion de tabla
 with app.app_context():   
   db.create_all()
+
+#esquema categoria
+class CategoriaSchema(ma.Schema):
+  class Meta:
+    fields = ('cat_id','cat_nom','cat_desp')
+
+#una sola respuesta
+categoria_schema = CategoriaSchema()
+
+#muchas respuestas
+categorias_schema = CategoriaSchema(many=True)
+
+#GET##########################################
+@app.route('/categoria', methods=['GET'])
+def get_categorias():
+  all_categorias = Categoria.query.all()
+  result = categorias_schema.dump(all_categorias)
+  return jsonify(result)
 
 #mensaje de bienvenida
 @app.route('/',methods=['GET'])
