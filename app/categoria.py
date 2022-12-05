@@ -54,6 +54,17 @@ def get_categoria_x_id(id):
   una_categoria = Categoria.query.get(id)
   return categoria_schema.jsonify(una_categoria)
 
+#POST ########################################
+@app.route('/categoria', methods=['POST'])
+def insert_categoria():
+  data = request.get_json(force=True)
+  cat_nom = data['cat_nom']
+  cat_desp = data['cat_desp']
+
+  nueva_categoria = Categoria(cat_nom, cat_desp)
+  db.session.add(nueva_categoria)
+  db.session.commit()
+  return categoria_schema.jsonify(nueva_categoria)
 #mensaje de bienvenida
 @app.route('/',methods=['GET'])
 def index():
